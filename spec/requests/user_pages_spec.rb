@@ -4,6 +4,45 @@ describe "UserPages" do
 
 	subject { page }
 
+	describe "index" do
+		
+		let(:user) { FactoryGirl.create(:user) }
+
+		before do
+			sign_in user
+			visit users_path
+		end
+
+
+		it {should have_selector('title', text: 'All users')}
+		it {should have_selector('h1', text: 'All users')}
+
+		it "should list each user" do
+			User.all.each do |user|
+				page.should have_selector('li', text:user.name)
+			end
+		end
+
+		describe "delete links" do
+			it {should_not have_link('delete')}
+
+			describe "as an admin user" do
+				let (:admin) {FactoryGirl.create(:admin)}
+
+				before do
+					sign_in admin
+					visit users_path
+				end
+
+				it {should have_link('delete', href: user_path(User.first))}
+				it "should be able to delete another user" do
+					expect {click_link('delete')}.to change(User, :count).by(-1)
+				end
+				it {should_not have_link('delete', href: user_path(admin))}
+			end
+		end
+	end
+
 	describe "signup" do
 		before {visit signup_path}
 
@@ -32,9 +71,27 @@ describe "UserPages" do
 				expect{click_button submit.to change(User.count).by(1)}
 			end
 
-			it { should have_link('Sign out')}
 		end
 
+	end
+
+	describe "edit" do
+		let(:user) { FactoryGirl.create(:user)}
+		before do
+			sign_in user
+			visit edit_user_path(user)
+		end
+
+		describe "page" do
+			it { should have_selector('h1', text: "Update your profile")}
+			it { should have_selector('title', text: "Edit user")}
+			it { should have_link('change', href: 'http://gravatar.com/emails')}
+		end
+
+		describe "with invalid information" do
+			before { click_button "Save changes"}
+			it {should have_content('error')}
+		end
 	end
 
 	describe "profile page" do
