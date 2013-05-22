@@ -1,0 +1,175 @@
+
+Micropost
+[32m  should respond to #content[0m
+[32m  should respond to #user_id[0m
+[32m  should respond to #user[0m
+[32m  should be valid[0m
+  user
+[32m    should == #<User id: 2, name: "Person 5", email: "person_5@example.com", created_at: "2013-05-22 13:09:56", updated_at: "2013-05-22 13:09:56", password_digest: "$2a$04$FETAQy5jY1J1C4v22ZWWV.ZoQBG5bGfdoVwHEo0b2vcP...", remember_token: "ebX8DuJ55bIJhh0gUsLmAA", admin: false>[0m
+  accessible attributes
+[32m    should not allow access to user_id[0m
+  when a user id is not present
+[32m    should not be valid[0m
+  with blank content
+[32m    should not be valid[0m
+  with content that is too long
+[32m    should not be valid[0m
+
+User
+[32m  should respond to #name[0m
+[32m  should respond to #email[0m
+[32m  should respond to #password_digest[0m
+[32m  should respond to #password[0m
+[32m  should respond to #password_confirmation[0m
+[32m  should respond to #admin[0m
+[32m  should respond to #remember_token[0m
+[32m  should respond to #authenticate[0m
+[32m  should respond to #microposts[0m
+[32m  should respond to #feed[0m
+[32m  should be valid[0m
+[32m  should not be admin[0m
+  with admin attribute set to 'true'
+[32m    should be admin[0m
+  when name is not present
+[32m    should not be valid[0m
+  when an email is not present
+[32m    should not be valid[0m
+  when a password is not present
+[32m    should not be valid[0m
+  when password doesn't match confirmation
+[32m    should not be valid[0m
+  when password confirmation is nil
+[32m    should not be valid[0m
+  when a name is too long
+[32m    should not be valid[0m
+  when an email is valid
+[32m    should be invalid[0m
+[32m    should be valid[0m
+  when an email address is taken
+[32m    should not be valid[0m
+  with a password that's too short
+[32m    should be invalid[0m
+  return value of authenticate method
+    with valid password
+[32m      should == #<User id: 2, name: "Joe Bloggs", email: "jb@bloggs.net", created_at: "2013-05-22 13:09:56", updated_at: "2013-05-22 13:09:56", password_digest: "$2a$04$cIL0Mja0Jrxb9c1784teWu6K6yC3jX.I3h9R8iCBaUr6...", remember_token: "K4HOmz9XWlT9l3V11_u1jg", admin: false>[0m
+    with invalid password
+[32m      should not == false[0m
+[32m      should be false[0m
+  mixed case email
+[32m    should be save to lowercase[0m
+  remember_token
+    remember_token
+[32m      should not be blank[0m
+  micropost associations
+[32m    should have the right order[0m
+[32m    should destroy associated microposts[0m
+    status
+      feed
+[32m        should include #<Micropost id: 3, content: "Lorem ipsum", user_id: 2, created_at: "2013-05-22 12:09:57", updated_at: "2013-05-22 13:09:57">[0m
+      feed
+[32m        should include #<Micropost id: 2, content: "Lorem ipsum", user_id: 2, created_at: "2013-05-21 13:09:57", updated_at: "2013-05-22 13:09:57">[0m
+      feed
+[32m        should not include #<Micropost id: 4, content: "Lorem ipsum", user_id: 3, created_at: "2013-05-22 13:09:57", updated_at: "2013-05-22 13:09:57">[0m
+
+AuthenticationPages
+  signin page
+[32m    should has css "h1" with text "Sign in"[0m
+[32m    should has css "h1" with text "Sign in"[0m
+  signin
+    with invalid info
+[32m      should has css "title" with text "Sign in"[0m
+[32m      should has css "div" with text "Invalid"[0m
+      after visiting another page
+[32m        should not has css "div.alert.alert-error"[0m
+    with valid info
+[32m      should has css "title" with text "Person 11"[0m
+[32m      should has link "Users"[0m
+[32m      should has link "Profile"[0m
+[32m      should has link "Settings"[0m
+[32m      should has link "Sign out"[0m
+[32m      should not has link "Sign in"[0m
+      followed by signout
+[32m        should has link "Sign in"[0m
+    with signed in user
+[32m      should has css "title" with text "Person 18"[0m
+[32m      should has link "Profile"[0m
+[32m      should has link "Settings"[0m
+[32m      should not has link "Sign in"[0m
+  authorization
+    for non-signed in users
+      when attempting to visit a protected page
+        after signing in
+[32m          should render the desired protected page[0m
+      in the Microposts controller
+        submitting to the create action
+[32m          should redirect to "/signin"[0m
+        submitting to the destroy action
+[32m          should redirect to "/signin"[0m
+      in the User controller
+        visiting the edit path
+[32m          should has css "title" with text "Sign in"[0m
+        submitting to the update action
+[32m          should redirect to "/signin"[0m
+        visiting the user index
+[32m          should has css "title" with text "Sign in"[0m
+    as wrong user
+      visiting Usersedit page
+[32m        should not has css "title" with text "Edit user"[0m
+      submitting a PUT requrest to the Usersupdate action
+[32m        should redirect to "/"[0m
+    as non-admin user
+      submitting a DELETE request to the Users#destroy action
+[32m        should redirect to "/"[0m
+
+MicropostPages
+  micropost creation
+    with invalid information
+[32m      should not create a micropost[0m
+      error message
+[32m        should has content "error"[0m
+    with valid information
+[32m      should create a micropost[0m
+  micropost destruction
+    as correct user
+[32m      should delete a micropost[0m
+
+StaticPages
+  Home page
+    for signed in
+[32m      should render the user's feed[0m
+
+UserPages
+  index
+[32m    should has css "title" with text "All users"[0m
+[32m    should has css "h1" with text "All users"[0m
+[32m    should list each user[0m
+    delete links
+[32m      should not has link "delete"[0m
+      as an admin user
+[32m        should has link "delete"[0m
+[32m        should be able to delete another user[0m
+[32m        should not has link "delete"[0m
+  signup
+    with invalid information
+[32m      should not create a user[0m
+      after submission
+[32m        should not has css "li" with text "digest"[0m
+    with valid information
+[32m      should create a user[0m
+  edit
+    page
+[32m      should has css "h1" with text "Update your profile"[0m
+[32m      should has css "title" with text "Edit user"[0m
+[32m      should has link "change"[0m
+    with invalid information
+[32m      should has content "error"[0m
+  profile page
+[32m    should has css "h1" with text "Person 51"[0m
+[32m    should has css "title" with text "Person 52"[0m
+    microposts
+[32m      should has content "foo"[0m
+[32m      should has content "bar"[0m
+[32m      should has content "2"[0m
+
+Finished in 3.62 seconds
+[32m91 examples, 0 failures[0m
