@@ -30,7 +30,7 @@ group :assets do
   gem 'modernizr-rails'
 end
 
-gem 'jquery-rails'
+gem 'jquery-rails', '>= 3.1.3'
 
 group :test do
 	gem 'factory_girl_rails', '4.1.0'
