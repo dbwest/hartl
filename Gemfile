@@ -34,7 +34,7 @@ gem 'jquery-rails'
 
 group :test do
 	gem 'factory_girl_rails', '4.1.0'
-	gem 'capybara', '1.1.2'
+	gem 'capybara', '1.1.3'
 	gem 'growl', '1.0.3'
 end
 
